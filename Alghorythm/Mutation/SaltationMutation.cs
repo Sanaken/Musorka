@@ -5,10 +5,6 @@ namespace GenAlgorithm.Mutation
 {
     public class SaltationMutation : AStrategyMutation
     {
-        public SaltationMutation(int MutationChance = 1) : base(MutationChance)
-        {
-        }
-
         protected override void DirectMutation(Person person)
         {
             int[] code = person.GetCode();

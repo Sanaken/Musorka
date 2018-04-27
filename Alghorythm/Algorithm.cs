@@ -19,11 +19,14 @@ namespace GenAlgorithm
         // the selection of operators via roulette method:
         double[] mCrossRoulette = new double[3];
         double[] mMutRoulette = new double[3];
-        //double[] mSelRoulette = new double[/*3*/2];
+
+        // Period of using Roulette selection between using
+        // BTournament selection (in iterations)
+        int mRouletteSelectionPeriod = 5;
 
         IStrategyCrossover[] mCrossOperators = { new OXCrossOver(), new CXCrossover(), new PMXCrossover() };
         AStrategyMutation[] mMutOperators = { new SaltationMutation(), new InversionMutation(), new PointMutation() };
-        IStrategySelection[] mSelOperators = { new BTornamentSelection(), new RouletteSelection()/*, new RangeSelection() */};
+        IStrategySelection[] mSelOperators = { new BTornamentSelection(), new RouletteSelection()};
 
         int[] mCurrentOperators = new int[3];
         AMatrixWrapper mMWrapper;
@@ -64,10 +67,6 @@ namespace GenAlgorithm
 
             mGenOperator = new RouletteGeneration();
 
-            //TO DO: Remove...
-            mCrossOperator = new OXCrossOver();
-            mMutOperator = new PointMutation();
-
             // Generating start population:
             mMainPopulation = mGenOperator.GeneratePop(mMWrapper, mPopulationCapacity);
             mBufferPopulation = new Person[2 * populationCapacity];
@@ -79,7 +78,7 @@ namespace GenAlgorithm
 
             for (int i = 0; i < mCrossRoulette.Length; i++)
             {
-                mCrossRoulette[i] = mAveFit;
+                mCrossRoulette[i] = mMWrapper.FitnessFunction(mBestPerson);
                 mMutRoulette[i] = mAveFit;
                 //mSelRoulette[i] = mAveFit;
             }
@@ -93,19 +92,21 @@ namespace GenAlgorithm
 
         public void Run()
         {
+            const int samePopMax = 10;
+            int samePopCounter = 0;
+
             if (mMWrapper.mState != 0)
                 return;
 
             // Print initial statistics for generated population:
             PrintStatistics(0);
-
-            const int RouletteSelectionPeriod = 5;
+        
             // Main cycle of EGA
             for (int iteration = 0; iteration < mIterationNumber; iteration++)
             {
-                //ChangeOperators();
+                ChangeOperators();
 
-                if(iteration % RouletteSelectionPeriod == 0)
+                if(iteration % mRouletteSelectionPeriod == 0)
                     mSelOperator = mSelOperators[1];    
                 else
                     mSelOperator = mSelOperators[0];
@@ -136,32 +137,21 @@ namespace GenAlgorithm
                     mBufferPopulation[mPopulationCapacity + i] = mCrossOperator.CrossingOver(
                         mMainPopulation[i], mMainPopulation[indexOfPair]);
                     // Childs can mutate with a given probablity
-                    mMutOperator.Mutation(mBufferPopulation[mPopulationCapacity + i]);
+                    MutateAndAddPoints(mBufferPopulation[mPopulationCapacity + i]);
                 }
 
                 mMainPopulation = mSelOperator.Selection(mBufferPopulation, mMWrapper);
 
                 // If selection is B-Tournament, The champion is guaranteed to move into the next generation
-                if (iteration % RouletteSelectionPeriod == 0)
+                if (iteration % mRouletteSelectionPeriod == 0)
                     SaveChampion();
 
                 SetBestPerson();
                 SetAveFintess();
                 SetDiversity();
 
-                mCrossRoulette[mCurrentOperators[0]] += AddPointsToCrossOverRoulette();
-                if (mCrossRoulette[mCurrentOperators[0]] < 0)
-                {
-                    mCrossRoulette[mCurrentOperators[0]] = 0;
-                }
-               /* mSelRoulette[mCurrentOperators[2]] += AddPointsToSelectionRoulette();
-                if (mSelRoulette[mCurrentOperators[2]] < 0)
-                {
-                    mSelRoulette[mCurrentOperators[2]] = 0;
-                }*/
-                PrintStatistics(iteration + 1);
-
-                
+                AddPointsToCrossOverRoulette();
+                PrintStatistics(iteration + 1);                
 
                 if (mDiversity <= (double)1/mPopulationCapacity)
                 {
@@ -169,6 +159,21 @@ namespace GenAlgorithm
                     PrintOPRouletteState();
                     Console.WriteLine(LoadBestTour());
                     return;
+                }
+
+                if (mPreDiversity == mDiversity)
+                {
+                    if (++samePopCounter > samePopMax)
+                    {
+                        samePopCounter = 0;
+                        if (mRouletteSelectionPeriod > 1)
+                            mRouletteSelectionPeriod--;
+                    }
+                    
+                }
+                else
+                {
+                    samePopCounter = 0;
                 }
             }
 
@@ -182,15 +187,15 @@ namespace GenAlgorithm
             double sumBuf = 0;
             Console.WriteLine("-----------------------------------");
             Console.WriteLine("Состояние рулеток:");
-            /*Console.WriteLine("Селекция: ");
-            foreach (double d in mSelRoulette)
+            Console.WriteLine("Мутация: ");
+            foreach (double d in mMutRoulette)
                 sumBuf += d;
-            for(int i = 0; i < mSelRoulette.Length; i++)
+            for(int i = 0; i < mMutRoulette.Length; i++)
             {
-                Console.WriteLine(mSelOperators[i] + ": {0:0.00}%",mSelRoulette[i] / sumBuf * 100);
+                Console.WriteLine(mMutOperators[i] + ": {0:0.00}%", mMutRoulette[i] / sumBuf * 100);
             }
             
-            sumBuf = 0;*/
+            sumBuf = 0;
             Console.WriteLine("Кроссовер: ");
             foreach (double d in mCrossRoulette)
                 sumBuf += d;
@@ -200,6 +205,7 @@ namespace GenAlgorithm
             }
             Console.WriteLine("-----------------------------------");
         }
+
         //Tries to load the best pers from ~filename_tour.txt
         private string LoadBestTour()
         {
@@ -252,9 +258,55 @@ namespace GenAlgorithm
             return (mPreAveFit - mAveFit) + (mDiversity - mPreDiversity)*Math.Sqrt(mAveFit);
         }
 
-        private double AddPointsToCrossOverRoulette()
+        private double GetCrossPoints()
         {
-            return mMWrapper.FitnessFunction(mPreBestPerson) - mMWrapper.FitnessFunction(mBestPerson) + (mPreAveFit - mAveFit);
+            return mMWrapper.FitnessFunction(mPreBestPerson) - mMWrapper.FitnessFunction(mBestPerson); 
+        } 
+        private void AddPointsToCrossOverRoulette()
+        {
+            for (int iter = 0; iter < mCrossRoulette.Length; iter++)
+            {
+                if (iter != mCurrentOperators[0])
+                {
+                    mCrossRoulette[iter] -= GetCrossPoints();
+                    if (mCrossRoulette[iter] < 0)
+                    {
+                        mCrossRoulette[iter] = 0;
+                    }
+                }
+
+                mCrossRoulette[mCurrentOperators[0]] += GetCrossPoints();
+            }
+            
+        }
+
+        private void MutateAndAddPoints(Person pers)
+        {
+            Person buf = new Person(pers.GetCode());
+            mMutOperator.Mutation(pers);
+            double dif = mMWrapper.FitnessFunction(buf) -
+                mMWrapper.FitnessFunction(pers);
+
+            if (!buf.IsEqual(pers))
+            {
+                for (int iter = 0; iter < mCrossRoulette.Length; iter++)
+                {
+                    if (iter != mCurrentOperators[1])
+                    {
+                        mMutRoulette[iter] -= dif;
+                        if (mMutRoulette[iter] < 0)
+                        {
+                            mMutRoulette[iter] = 0;
+                        }
+                    }
+
+                    mMutRoulette[mCurrentOperators[1]] += dif;
+                    if (mMutRoulette[mCurrentOperators[1]] < 0)
+                    {
+                        mMutRoulette[mCurrentOperators[1]] = 0;
+                    }
+                }
+            }
         }
 
         // Finds the best person from buffer population to implement 

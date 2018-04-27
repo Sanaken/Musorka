@@ -10,7 +10,7 @@ namespace Population
         int[] code;
         public Person(int[] code)
         {
-            this.code = code;
+            this.code = (int[])code.Clone();
         }
         
         public override string ToString()
