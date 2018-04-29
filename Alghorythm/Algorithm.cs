@@ -22,7 +22,8 @@ namespace GenAlgorithm
 
         // Period of using Roulette selection between using
         // BTournament selection (in iterations)
-        int mRouletteSelectionPeriod = 5;
+        const int ROULETTE_SEL_MAX_PERIOD = 5;
+        int mRouletteSelectionPeriod = ROULETTE_SEL_MAX_PERIOD;
 
         IStrategyCrossover[] mCrossOperators = { new OXCrossOver(), new CXCrossover(), new PMXCrossover() };
         AStrategyMutation[] mMutOperators = { new SaltationMutation(), new InversionMutation(), new PointMutation() };
@@ -92,8 +93,8 @@ namespace GenAlgorithm
 
         public void Run()
         {
-            const int samePopMax = 10;
-            int samePopCounter = 0;
+            const int counterMax = 5;
+            int samePopCounter = 0, difPopCounter = 0;
 
             if (mMWrapper.mState != 0)
                 return;
@@ -163,17 +164,23 @@ namespace GenAlgorithm
 
                 if (mPreDiversity == mDiversity)
                 {
-                    if (++samePopCounter > samePopMax)
-                    {
+                    difPopCounter = 0;
+                    if (++samePopCounter > counterMax)
+                    {                      
                         samePopCounter = 0;
                         if (mRouletteSelectionPeriod > 1)
                             mRouletteSelectionPeriod--;
-                    }
-                    
+                    }                    
                 }
                 else
                 {
                     samePopCounter = 0;
+                    if (++difPopCounter > counterMax)
+                    {
+                        difPopCounter = 0;
+                        if (mRouletteSelectionPeriod < ROULETTE_SEL_MAX_PERIOD)
+                            mRouletteSelectionPeriod++;
+                    }
                 }
             }
 
