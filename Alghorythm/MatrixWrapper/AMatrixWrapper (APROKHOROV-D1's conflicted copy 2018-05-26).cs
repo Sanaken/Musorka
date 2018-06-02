@@ -1,4 +1,9 @@
 ﻿using Population;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GenAlgorithm
 {
@@ -10,7 +15,7 @@ namespace GenAlgorithm
         // Min-max flag (true - max, false - min)
         //public bool mMinMax { get; protected set; }
         // Int state code
-        public int mState { get; protected set; }
+        public int mState { get; }
 
         public AMatrixWrapper(string filename) { mState = ReadMatrix(filename); }
         protected abstract int ReadMatrix(string filename);

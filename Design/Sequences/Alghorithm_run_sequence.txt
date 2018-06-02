@@ -1,0 +1,88 @@
+@startuml
+title Initializing instance of algorithm
+
+Actor ClientCode
+participant Algorithm
+participant MatrixWrapper
+
+box "Population" #Pink
+participant Person
+endbox
+
+box "Operators" #LightBlue
+participant Crossover
+participant Mutation
+participant Selection
+participant Generator
+endbox
+
+
+
+ClientCode -> Algorithm: new Algorithm(iter_count, pop_capacity, matr_path)
+Algorithm -> MatrixWrapper: new MatrixWrapper(matr_path + extension)
+MatrixWrapper -> Algorithm: mWrapper
+alt mWrapper is incorrect
+	Algorithm -> ClientCode: Console.Writeline(no matrix)
+else
+	Algorithm -> Generator: new Generator()
+	Generator -> Algorithm: genOperator
+	loop Filling operators array
+		Algorithm -> Crossover: new Crossover()
+		Crossover -> Algorithm: crossOperator
+		Algorithm -> Mutation: new Mutation()
+		Mutation -> Algorithm: mutOperator
+	end loop
+	Algorithm -> Generator: GeneratePop(mWrapper, pop_capacity)
+	Generator -> Algorithm: startPopulation
+	group Initializing statistics variables
+		Algorithm -> Algorithm: SetBestPerson
+		Algorithm -> Algorithm: SetAverageFintess
+		Algorithm -> Algorithm: SetDiversity
+	end group
+	loop Set start values to operator's roulettes\nCrossover & Mutation
+		Algorithm -> Algorithm: mCrossRoulette = mMutRoulette = AverageFintess
+	end loop
+end 
+Algorithm -> ClientCode: algorithmInstance
+
+newpage Run Algorithm
+alt mWrapper is incorrect
+	Algorithm -> ClientCode: Console.Writeline(no matrix)
+else
+	Algorithm -> ClientCode: Print start statistics
+	loop Main Cycle of Algorithm
+		Algorithm -> Algorithm: Change Operators	
+		note over Selection: Main Selection operator - BTournament\nEvery N iterations using a RouletteSelection
+		alt is RouletteSelection turn?
+			Algorithm -> Algorithm: Set RouletteSelection
+		else
+			Algorithm -> Algorithm: Set BTournamentSelection
+		end
+		loop Crossing-over cycle (United population of parents & childs as result)
+			loop A pair is choosing for each Person in population\by outbreeding scheme
+				Person -> Algorithm: HammingDistance
+				Algorithm -> Algorithm: Set index of pair with max hamming distance
+			end loop
+			Algorithm -> Crossover: Person, PairPerson
+			Crossover -> Algorithm: ChildPerson
+			note over Mutation: Points to mutation roulette adds as fitness function difference\nbetween person after & before mutation 
+			Algorithm -> Mutation: MutatePerson
+		end loop
+
+		Algorithm -> Selection: United_Pop
+		Selection -> Algorithm: New_Generation_Pop
+
+		group Updating statistics variables
+			Algorithm -> Algorithm: SetBestPerson
+			Algorithm -> Algorithm: SetAverageFintess
+			Algorithm -> Algorithm: SetDiversity
+		end group
+
+		Algorithm -> Algorithm: AddPointsToCrossOverRoulette
+		Algorithm -> ClientCode: Print iteration statistics
+
+		alt last iteration or diversity = 1/pop_capacity
+			Algorithm -> ClientCode: Print final statistics
+			note over Algorithm: EXIT			
+	end loop
+@enduml

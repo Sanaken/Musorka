@@ -1,0 +1,120 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+
+	interface ICrossover {
+		+ Person CrossingOver(Person, Person)
+	}
+
+	class CXCrossover {
+		+ CXCrossover()
+	}
+
+	class OXCrossover {
+		+ OXCrossover
+	}
+
+	class PMXCrossover {
+	 + PMXCrossover()
+	}
+
+
+
+	interface ISelection {
+		+ Person[] Selection(Person[], SalesmanMW);
+	}
+
+	class BTSelection {
+		+ BTSelection()
+	}
+
+	class RouletteSelection {
+		+ RouletteSelection()
+	}
+
+
+
+	abstract class AMutation {
+		- int mutChance
+		+ AMutation(int)
+		+ void Mutation(Person)
+		# void DirectMutation(Person)
+	}
+
+	class Inversion {
+		+ Inversion()
+	}
+
+	class Saltation {
+		+ Saltation()
+	}
+
+	class Point {
+		+ Point()
+	}
+
+
+class SalesmanMW {
+	- double[,] matrix
+	+ int state
+	+ SalesmanMW(string)
+	- int ReadMatrix(string)
+	+ double FitFunc(Person)
+}
+note top: state - состояние матрицы:\n 0 - матрица корректна,\nОстальное - коды ошибок
+
+class Generation {
+	+ Generation()
+	+ Person[] GeneratePop()
+}
+
+class Person {
+	- int[] code
+	+ Person(int[])
+	+ int HammingDist(Person)
+}
+
+class Algorithm {
+	- string fileName/tour
+	- double crossRoulette
+	- double mutRoulette
+	- ICrossover[] crossovers
+	- ISelection[] selections
+	- AMutation[] mutations
+	- SalesmanMW mWrapper
+	- Person[] mainPop
+	- Person[] bufferPop
+	- Person bestPerson/pre
+	- double diversity/pre
+	- double aveFit/pre
+	+ Algorithm(int, int, string)
+	+ void Run()
+	- void PrintRouletteState()
+	- string LoadBestTour()
+	- double AddPointCrossRoulette()
+	- void MutateAddPoints(Person)
+	- void SaveChampion()
+	- void SetBestPerson()
+	- void SetDiversity
+	- void SetAveFitness()
+	- int Roulette(double[])
+	- void ChangeOperators()
+	- void PrintStatistics(int)
+}
+
+ICrossover <.. CXCrossover
+ICrossover <.. OXCrossover
+ICrossover <.. PMXCrossover
+ISelection <.. BTSelection
+ISelection <.. RouletteSelection
+AMutation <|-- Inversion
+AMutation <|-- Saltation
+AMutation <|-- Point
+Algorithm *-- Generation
+Algorithm "1" *-- "3" ICrossover
+Algorithm "1" *-- "2" ISelection
+Algorithm "1" *-- "3" AMutation
+Algorithm  *-- SalesmanMW
+Algorithm "1" *-- "many" Person
+
+@enduml

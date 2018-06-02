@@ -81,14 +81,7 @@ namespace GenAlgorithm
             {
                 mCrossRoulette[i] = mMWrapper.FitnessFunction(mBestPerson);
                 mMutRoulette[i] = mAveFit;
-                //mSelRoulette[i] = mAveFit;
             }
-
-            /*for (int i = 0; i < mSelRoulette.Length; i++)
-            {
-                mSelRoulette[i] = mAveFit;
-            }*/
-
         }
 
         public void Run()
@@ -97,8 +90,10 @@ namespace GenAlgorithm
             int samePopCounter = 0, difPopCounter = 0;
 
             if (mMWrapper.mState != 0)
+            {
+                Console.WriteLine("Matrix is invalid, run is impossible!");
                 return;
-
+            }
             // Print initial statistics for generated population:
             PrintStatistics(0);
         
