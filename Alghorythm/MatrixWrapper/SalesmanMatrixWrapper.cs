@@ -13,12 +13,21 @@ namespace GenAlgorithm
     {
         // 2-x Dimension for coordinate...
         private const int numberOfCoordinateDimensions = 2;
+        private bool _symmetric = true;
         public SalesmanMatrixWrapper(string filename) : base(filename)
         {
             if (mState != 0)
             {
                 mState = ReadCoordinates(filename);
             }
+
+            for (int i = 0; i < mMatrixSize; i++)
+                for (int j = 0; j < mMatrixSize; j++)
+                    if ((i != j) && (mMatrix[i, j] != mMatrix[j, i]))
+                    {
+                        _symmetric = false;
+                        return;
+                    }                       
         }
         /**
          * Returns: 
@@ -191,6 +200,43 @@ namespace GenAlgorithm
         {
             Console.Write(FitnessFunction(p) + "---");
             p.PrintPers();
+        }
+
+        public override int Distance(Person p1, Person p2)
+        {
+            int distance = 0, distanceRev = int.MaxValue;
+            int[] code = p1.GetCode();
+            int[] code2 = p2.GetCode();
+
+            for (int i = 0; i < code.Length; i++)
+            {
+                int currentCity = code[i];
+                int index = Array.IndexOf(code2, currentCity);
+
+                int nextIndex = (i == code.Length - 1) ? 0 : (i + 1);
+                int nextIndex2 = (index == code.Length - 1) ? 0 : (index + 1);
+
+                if (code[nextIndex] != code2[nextIndex2])
+                    distance++;
+            }
+
+            if (_symmetric)
+            {
+                distanceRev = 0;
+                for (int i = code.Length - 1; i >= 0; i--)
+                {
+                    int currentCity = code[i];
+                    int index = Array.IndexOf(code2, currentCity);
+
+                    int nextIndex = (i == 0) ? code.Length - 1 : (i - 1);
+                    int nextIndex2 = (index == 0) ? code.Length - 1 : (index - 1);
+
+                    if (code[nextIndex] != code2[nextIndex2])
+                        distanceRev++;
+                }
+            }
+
+            return distance < distanceRev ? distance : distanceRev;
         }
     }
 }

@@ -46,24 +46,5 @@ namespace Population
             }
             return true;
         }
-
-        public int HammingDistance(Person person)
-        {
-            int distance = 0;
-            int[] code2 = person.GetCode();
-
-            for(int i = 0; i < code.Length; i++)
-            {
-                int currentCity = code[i];
-                int index = Array.IndexOf(code2, currentCity);
-
-                int nextIndex = (i == code.Length - 1) ? 0 : (i + 1);
-                int nextIndex2 = (index == code.Length - 1) ? 0 : (index + 1);
-
-                if (code[nextIndex] != code2[nextIndex2])
-                    distance++;
-            }               
-            return distance;
-        }
     }
 }

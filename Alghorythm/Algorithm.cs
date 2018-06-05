@@ -66,7 +66,13 @@ namespace GenAlgorithm
             mIterationNumber = iterationNumber;
             mPopulationCapacity = populationCapacity;
 
+            mSelOperator = new RouletteSelection();
             mGenOperator = new RouletteGeneration();
+<<<<<<< Updated upstream
+=======
+            mMutOperator = new PointMutation();
+            mCrossOperator = new OXCrossOver();
+>>>>>>> Stashed changes
 
             // Generating start population:
             mMainPopulation = mGenOperator.GeneratePop(mMWrapper, mPopulationCapacity);
@@ -115,17 +121,17 @@ namespace GenAlgorithm
 
                     // According to the outbreeding scheme, each pair is selected by a pair
                     int indexOfPair = 0;
-                    int hammingDistMax = 0;
+                    int distMax = 0;
 
                     for (int j = 1; j < mPopulationCapacity; j++)
                     {
-                        int hammingDistBuf = mMainPopulation[i].HammingDistance(mMainPopulation[(i + j) 
-                            % mPopulationCapacity]);
+                        int distBuf = mMWrapper.Distance(mMainPopulation[i], 
+                            mMainPopulation[(i + j) % mPopulationCapacity]);
 
-                        if (hammingDistBuf > hammingDistMax)
+                        if (distBuf > distMax)
                         {
                             indexOfPair = (i + j) % mPopulationCapacity;
-                            hammingDistMax = hammingDistBuf;
+                            distMax = distBuf;
                         }
                     }
 

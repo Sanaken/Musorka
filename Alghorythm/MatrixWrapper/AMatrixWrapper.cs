@@ -20,6 +20,7 @@ namespace GenAlgorithm
         {
             return mMatrixSize;
         }
+        public abstract int Distance(Person p1, Person p2);
         public double[,] GetMatrix() { return mMatrix; }
     }
 }
