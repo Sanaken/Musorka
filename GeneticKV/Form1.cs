@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using GenAlgorithm.Generation;
 using GenAlgorithm.Crossover;
 using GenAlgorithm.Selection;
+using GenAlgorithm.Mutation;
 
 namespace GeneticKV
 {

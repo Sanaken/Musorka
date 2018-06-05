@@ -9,10 +9,6 @@ namespace GenAlgorithm
         {
             new Algorithm(50000, 100, "Matrix43Swith").Run();
             new NearestNeighbour("Matrix43Swith").Run();
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
             Console.ReadLine();
         }
     }

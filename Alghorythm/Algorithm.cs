@@ -68,11 +68,6 @@ namespace GenAlgorithm
 
             mSelOperator = new RouletteSelection();
             mGenOperator = new RouletteGeneration();
-<<<<<<< Updated upstream
-=======
-            mMutOperator = new PointMutation();
-            mCrossOperator = new OXCrossOver();
->>>>>>> Stashed changes
 
             // Generating start population:
             mMainPopulation = mGenOperator.GeneratePop(mMWrapper, mPopulationCapacity);
