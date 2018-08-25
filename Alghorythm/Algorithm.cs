@@ -4,11 +4,7 @@ using GenAlgorithm.Selection;
 using GenAlgorithm.Mutation;
 using Population;
 using System;
-using TspLibNet;
-using System.Text;
 using System.IO;
-
-// I need to save best person in every generations.
 
 namespace GenAlgorithm
 {
@@ -16,12 +12,15 @@ namespace GenAlgorithm
     {
         //       ~filename_output.txt  ~filename
         static string mOutputFileName, mFileName;
+        StreamWriter sw;
+
         // the selection of operators via roulette method:
         double[] mCrossRoulette = new double[3];
         double[] mMutRoulette = new double[3];
 
         // Period of using Roulette selection between using
         // BTournament selection (in iterations)
+        const double CRITICAL_DIVERSITY = 0.1;
         const int ROULETTE_SEL_MAX_PERIOD = 5;
         int mRouletteSelectionPeriod = ROULETTE_SEL_MAX_PERIOD;
 
@@ -54,7 +53,10 @@ namespace GenAlgorithm
 
         public Algorithm(int iterationNumber, int populationCapacity, string filename)
         {
+            // Initializing of File logging
             mOutputFileName = filename + "_output.txt";
+            sw = new StreamWriter(new FileStream("output/" + mOutputFileName, FileMode.Create, FileAccess.Write));
+
             mFileName = filename;
             mMWrapper = new SalesmanMatrixWrapper(filename + ".txt");
             if (mMWrapper.mState != 0)
@@ -87,9 +89,6 @@ namespace GenAlgorithm
 
         public void Run()
         {
-            const int counterMax = 5;
-            int samePopCounter = 0, difPopCounter = 0;
-
             if (mMWrapper.mState != 0)
             {
                 Console.WriteLine("Matrix is invalid, run is impossible!");
@@ -102,12 +101,6 @@ namespace GenAlgorithm
             for (int iteration = 0; iteration < mIterationNumber; iteration++)
             {
                 ChangeOperators();
-
-                if(iteration % mRouletteSelectionPeriod == 0)
-                    mSelOperator = mSelOperators[1];    
-                else
-                    mSelOperator = mSelOperators[0];
-
             // Crossing-over cycle...
             for (int i = 0; i < mPopulationCapacity; i++)
                 {
@@ -131,8 +124,8 @@ namespace GenAlgorithm
                     }
 
                     // Childs as a results of crossing-over take pars on selection too
-                    mBufferPopulation[mPopulationCapacity + i] = mCrossOperator.CrossingOver(
-                        mMainPopulation[i], mMainPopulation[indexOfPair]);
+                    mBufferPopulation[mPopulationCapacity + i] = 
+                        CrossAddPoints(mMainPopulation[i], mMainPopulation[indexOfPair]);
                     // Childs can mutate with a given probablity
                     MutateAndAddPoints(mBufferPopulation[mPopulationCapacity + i]);
                 }
@@ -140,14 +133,13 @@ namespace GenAlgorithm
                 mMainPopulation = mSelOperator.Selection(mBufferPopulation, mMWrapper);
 
                 // If selection is B-Tournament, The champion is guaranteed to move into the next generation
-                if (iteration % mRouletteSelectionPeriod == 0)
+                if(mSelOperator is RouletteSelection)
                     SaveChampion();
 
                 SetBestPerson();
                 SetAveFintess();
                 SetDiversity();
 
-                AddPointsToCrossOverRoulette();
                 PrintStatistics(iteration + 1);                
 
                 if (mDiversity <= (double)1/mPopulationCapacity)
@@ -156,28 +148,7 @@ namespace GenAlgorithm
                     PrintOPRouletteState();
                     Console.WriteLine(LoadBestTour());
                     return;
-                }
-
-                if (mPreDiversity == mDiversity)
-                {
-                    difPopCounter = 0;
-                    if (++samePopCounter > counterMax)
-                    {                      
-                        samePopCounter = 0;
-                        if (mRouletteSelectionPeriod > 1)
-                            mRouletteSelectionPeriod--;
-                    }                    
-                }
-                else
-                {
-                    samePopCounter = 0;
-                    if (++difPopCounter > counterMax)
-                    {
-                        difPopCounter = 0;
-                        if (mRouletteSelectionPeriod < ROULETTE_SEL_MAX_PERIOD)
-                            mRouletteSelectionPeriod++;
-                    }
-                }
+                }       
             }
 
             Console.WriteLine("Алгоритм завершен");
@@ -207,6 +178,31 @@ namespace GenAlgorithm
                 Console.WriteLine(mCrossOperators[i] + ": {0:0.00}%", mCrossRoulette[i] / sumBuf * 100);
             }
             Console.WriteLine("-----------------------------------");
+        }
+
+        private Person CrossAddPoints(Person p1, Person p2)
+        {
+            var pRet = mCrossOperator.CrossingOver(p1, p2);
+            var retv = mMWrapper.FitnessFunction(pRet);
+            var v1 = mMWrapper.FitnessFunction(p1);
+            var v2 = mMWrapper.FitnessFunction(p2);
+
+            var points = (v1 + v2) / 2 - retv;
+
+            for (int iter = 0; iter < mCrossRoulette.Length; iter++)
+            {
+                if (iter != mCurrentOperators[0])
+                {
+                    mCrossRoulette[iter] -= points;
+                    if (mCrossRoulette[iter] < 0)
+                    {
+                        mCrossRoulette[iter] = 0;
+                    }
+                }
+            }
+
+            mCrossRoulette[mCurrentOperators[0]] += points;
+            return pRet;
         }
 
         //Tries to load the best pers from ~filename_tour.txt
@@ -259,28 +255,6 @@ namespace GenAlgorithm
         {
             // min-crit
             return (mPreAveFit - mAveFit) + (mDiversity - mPreDiversity)*Math.Sqrt(mAveFit);
-        }
-
-        private double GetCrossPoints()
-        {
-            return mMWrapper.FitnessFunction(mPreBestPerson) - mMWrapper.FitnessFunction(mBestPerson); 
-        } 
-        private void AddPointsToCrossOverRoulette()
-        {
-            for (int iter = 0; iter < mCrossRoulette.Length; iter++)
-            {
-                if (iter != mCurrentOperators[0])
-                {
-                    mCrossRoulette[iter] -= GetCrossPoints();
-                    if (mCrossRoulette[iter] < 0)
-                    {
-                        mCrossRoulette[iter] = 0;
-                    }
-                }
-
-                mCrossRoulette[mCurrentOperators[0]] += GetCrossPoints();
-            }
-            
         }
 
         private void MutateAndAddPoints(Person pers)
@@ -409,6 +383,14 @@ namespace GenAlgorithm
             for(int i = 0; i < probablities.Length; i++)
             strit[i + 1] = strit[i] + probablities[i];
 
+            while(strit[strit.Length - 1] > int.MaxValue)
+            {
+                for(int i = 1; i < strit.Length - 1; i++)
+                {
+                    strit[i] /= 2;
+                }
+            }
+
             int rPoint = mRandomizer.Next((int)strit[strit.Length - 1]);
             for (int i = 0; i < probablities.Length; i++) 
             {
@@ -424,12 +406,18 @@ namespace GenAlgorithm
         // Changes operators via roulette-operators function
         private void ChangeOperators()
         {
+            if (mDiversity < CRITICAL_DIVERSITY || mDiversity == mPreDiversity)
+            {
+                mSelOperator = mSelOperators[1];
+            }
+            else
+            {
+                mSelOperator = mSelOperators[0];
+            }
             mCurrentOperators[0] = OperatorsRoulette(mCrossRoulette);
             mCurrentOperators[1] = OperatorsRoulette(mMutRoulette);
-            //mCurrentOperators[2] = OperatorsRoulette(mSelRoulette);
             mCrossOperator = mCrossOperators[mCurrentOperators[0]];
             mMutOperator = mMutOperators[mCurrentOperators[1]];
-            //mSelOperator = mSelOperators[mCurrentOperators[2]];
         }
 
         private void PrintStatistics(int iteration)
@@ -444,8 +432,7 @@ namespace GenAlgorithm
             Console.WriteLine("Used operators: " + mCrossOperator + ", " + 
                 mMutOperator + ", " + mSelOperator);
 
-            FileStream file = new FileStream("output/" + mOutputFileName, iteration==1?FileMode.Create:FileMode.Append, FileAccess.Write);
-            StreamWriter sw = new StreamWriter(file);
+            
 
             sw.WriteLine("-----------------------------");
             sw.WriteLine("-----------------------------");

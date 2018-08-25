@@ -156,9 +156,9 @@ namespace GenAlgorithm
             }
 
             mMatrix = new double[mMatrixSize, mMatrixSize];
-            for(int i=0;i< mMatrixSize; i++)
+            for (int i = 0; i < mMatrixSize; i++)
             {
-                for (int j=0;j< mMatrixSize; j++)
+                for (int j = 0; j < mMatrixSize; j++)
                 {
                     if (i == j)
                         mMatrix[i, j] = 0;
