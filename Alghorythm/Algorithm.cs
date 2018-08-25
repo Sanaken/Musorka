@@ -18,6 +18,8 @@ namespace GenAlgorithm
         double[] mCrossRoulette = new double[3];
         double[] mMutRoulette = new double[3];
 
+        // Mutation chance (in %)
+        int mMutationChance = 10;
         // Period of using Roulette selection between using
         // BTournament selection (in iterations)
         const double CRITICAL_DIVERSITY = 0.1;
@@ -25,7 +27,7 @@ namespace GenAlgorithm
         int mRouletteSelectionPeriod = ROULETTE_SEL_MAX_PERIOD;
 
         IStrategyCrossover[] mCrossOperators = { new OXCrossOver(), new CXCrossover(), new PMXCrossover() };
-        AStrategyMutation[] mMutOperators = { new SaltationMutation(), new InversionMutation(), new PointMutation() };
+        IMutator[] mMutOperators = { new SaltationMutator(), new InversionMutator(), new PointMutator() };
         IStrategySelection[] mSelOperators = { new BTornamentSelection(), new RouletteSelection()};
 
         int[] mCurrentOperators = new int[3];
@@ -39,7 +41,7 @@ namespace GenAlgorithm
         // The EGA operators:
         IStrategyGeneration mGenOperator;
         IStrategyCrossover mCrossOperator;
-        AStrategyMutation mMutOperator;
+        IMutator mMutOperator;
         IStrategySelection mSelOperator;
 
         // The EGA population & additional 2x-capacity buffer population
@@ -126,7 +128,9 @@ namespace GenAlgorithm
                     // Childs as a results of crossing-over take pars on selection too
                     mBufferPopulation[mPopulationCapacity + i] = 
                         CrossAddPoints(mMainPopulation[i], mMainPopulation[indexOfPair]);
+
                     // Childs can mutate with a given probablity
+                    if(mRandomizer)
                     MutateAndAddPoints(mBufferPopulation[mPopulationCapacity + i]);
                 }
 
@@ -260,7 +264,7 @@ namespace GenAlgorithm
         private void MutateAndAddPoints(Person pers)
         {
             Person buf = new Person(pers.GetCode());
-            mMutOperator.Mutation(pers);
+            mMutOperator.Mutate(pers);
             double dif = mMWrapper.FitnessFunction(buf) -
                 mMWrapper.FitnessFunction(pers);
 
@@ -444,6 +448,11 @@ namespace GenAlgorithm
             sw.WriteLine("Used operators: " + mCrossOperator + ", " +
                 mMutOperator + ", " + mSelOperator);
             sw.Close();
+        }
+
+        private bool WhetherMutate()
+        {
+            return (mRandomizer.Next(100) < mMutationChance);
         }
     }
 }

@@ -7,9 +7,9 @@ using Population;
 
 namespace GenAlgorithm.Mutation
 {
-    public class PointMutation : AStrategyMutation
+    public class PointMutator : IMutator
     {
-        protected override void DirectMutation(Person person)
+        public void Mutate(Person person)
         {
             int[] code = person.GetCode();
 

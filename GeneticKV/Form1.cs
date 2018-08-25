@@ -40,7 +40,7 @@ namespace GeneticKV
 
                         IStrategyGeneration genOperator;
                         IStrategyCrossover crossOperator;
-                        AStrategyMutation mutOperator;
+                        IMutator mutOperator;
                         IStrategySelection selOperator;
 
                         // I need to think right here
@@ -49,9 +49,9 @@ namespace GeneticKV
                         if (rbCross1.Checked)
                             crossOperator = new OXCrossOver();
                         if (rbMut1.Checked)
-                            mutOperator = new SaltationMutation();
+                            mutOperator = new SaltationMutator();
                         else if (rbMut2.Checked)
-                            mutOperator = new InversionMutation();
+                            mutOperator = new InversionMutator();
                         if (rbSel1.Checked)
                             selOperator = new RouletteSelection();
                         else if (rbSel2.Checked)
