@@ -1,11 +1,11 @@
 ﻿using System;
 using Population;
 
-namespace GenAlgorithm.Mutation
+namespace GenAlgorithm
 {
-    public class InversionMutation : AStrategyMutation
+    public class InversionMutator : IMutator
     {
-        protected override void DirectMutation(Person person)
+        public void Mutate(Person person)
         {
             int[] code = person.GetCode();
 

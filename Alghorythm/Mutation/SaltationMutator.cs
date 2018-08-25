@@ -3,9 +3,9 @@ using Population;
 
 namespace GenAlgorithm.Mutation
 {
-    public class SaltationMutation : AStrategyMutation
+    public class SaltationMutator : IMutator
     {
-        protected override void DirectMutation(Person person)
+        public void Mutate(Person person)
         {
             int[] code = person.GetCode();
 
