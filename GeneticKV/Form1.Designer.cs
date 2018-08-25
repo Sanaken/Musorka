@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rbGen2 = new System.Windows.Forms.RadioButton();
-            this.rbGen1 = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbCross2 = new System.Windows.Forms.RadioButton();
             this.rbCross1 = new System.Windows.Forms.RadioButton();
@@ -45,63 +42,24 @@
             this.tbFileName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.groupBox1.SuspendLayout();
+            this.rbMut3 = new System.Windows.Forms.RadioButton();
+            this.rbCross3 = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
-            // groupBox1
-            // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox1.Controls.Add(this.rbGen2);
-            this.groupBox1.Controls.Add(this.rbGen1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 34);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.groupBox1.Size = new System.Drawing.Size(130, 109);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Generations:";
-            // 
-            // rbGen2
-            // 
-            this.rbGen2.AutoSize = true;
-            this.rbGen2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rbGen2.Location = new System.Drawing.Point(6, 71);
-            this.rbGen2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.rbGen2.Name = "rbGen2";
-            this.rbGen2.Size = new System.Drawing.Size(119, 24);
-            this.rbGen2.TabIndex = 1;
-            this.rbGen2.TabStop = true;
-            this.rbGen2.Text = "radioButton2";
-            this.rbGen2.UseVisualStyleBackColor = true;
-            // 
-            // rbGen1
-            // 
-            this.rbGen1.AutoSize = true;
-            this.rbGen1.Checked = true;
-            this.rbGen1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rbGen1.Location = new System.Drawing.Point(6, 32);
-            this.rbGen1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.rbGen1.Name = "rbGen1";
-            this.rbGen1.Size = new System.Drawing.Size(88, 24);
-            this.rbGen1.TabIndex = 0;
-            this.rbGen1.TabStop = true;
-            this.rbGen1.Text = "Roulette";
-            this.rbGen1.UseVisualStyleBackColor = true;
-            // 
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox2.Controls.Add(this.rbCross3);
             this.groupBox2.Controls.Add(this.rbCross2);
             this.groupBox2.Controls.Add(this.rbCross1);
-            this.groupBox2.Location = new System.Drawing.Point(148, 34);
+            this.groupBox2.Location = new System.Drawing.Point(12, 34);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.groupBox2.Size = new System.Drawing.Size(114, 109);
+            this.groupBox2.Size = new System.Drawing.Size(115, 132);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Crossovers:";
@@ -113,10 +71,10 @@
             this.rbCross2.Location = new System.Drawing.Point(6, 68);
             this.rbCross2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.rbCross2.Name = "rbCross2";
-            this.rbCross2.Size = new System.Drawing.Size(63, 24);
+            this.rbCross2.Size = new System.Drawing.Size(49, 24);
             this.rbCross2.TabIndex = 1;
             this.rbCross2.TabStop = true;
-            this.rbCross2.Text = "none";
+            this.rbCross2.Text = "CX";
             this.rbCross2.UseVisualStyleBackColor = true;
             // 
             // rbCross1
@@ -135,13 +93,14 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.rbMut3);
             this.groupBox3.Controls.Add(this.rbMut2);
             this.groupBox3.Controls.Add(this.rbMut1);
-            this.groupBox3.Location = new System.Drawing.Point(268, 34);
+            this.groupBox3.Location = new System.Drawing.Point(146, 34);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.groupBox3.Size = new System.Drawing.Size(99, 109);
+            this.groupBox3.Size = new System.Drawing.Size(115, 132);
             this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Mutations:";
@@ -150,7 +109,7 @@
             // 
             this.rbMut2.AutoSize = true;
             this.rbMut2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rbMut2.Location = new System.Drawing.Point(4, 71);
+            this.rbMut2.Location = new System.Drawing.Point(4, 66);
             this.rbMut2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.rbMut2.Name = "rbMut2";
             this.rbMut2.Size = new System.Drawing.Size(91, 24);
@@ -176,11 +135,11 @@
             // 
             this.groupBox4.Controls.Add(this.rbSel2);
             this.groupBox4.Controls.Add(this.rbSel1);
-            this.groupBox4.Location = new System.Drawing.Point(373, 34);
+            this.groupBox4.Location = new System.Drawing.Point(277, 34);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.groupBox4.Size = new System.Drawing.Size(131, 109);
+            this.groupBox4.Size = new System.Drawing.Size(131, 132);
             this.groupBox4.TabIndex = 6;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Selections:";
@@ -189,7 +148,7 @@
             // 
             this.rbSel2.AutoSize = true;
             this.rbSel2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rbSel2.Location = new System.Drawing.Point(4, 71);
+            this.rbSel2.Location = new System.Drawing.Point(4, 66);
             this.rbSel2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.rbSel2.Name = "rbSel2";
             this.rbSel2.Size = new System.Drawing.Size(129, 24);
@@ -262,6 +221,31 @@
             this.textBox1.Size = new System.Drawing.Size(100, 26);
             this.textBox1.TabIndex = 10;
             // 
+            // rbMut3
+            // 
+            this.rbMut3.AutoSize = true;
+            this.rbMut3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.rbMut3.Location = new System.Drawing.Point(4, 100);
+            this.rbMut3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.rbMut3.Name = "rbMut3";
+            this.rbMut3.Size = new System.Drawing.Size(63, 24);
+            this.rbMut3.TabIndex = 2;
+            this.rbMut3.Text = "Point";
+            this.rbMut3.UseVisualStyleBackColor = true;
+            // 
+            // rbCross3
+            // 
+            this.rbCross3.AutoSize = true;
+            this.rbCross3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.rbCross3.Location = new System.Drawing.Point(6, 100);
+            this.rbCross3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.rbCross3.Name = "rbCross3";
+            this.rbCross3.Size = new System.Drawing.Size(61, 24);
+            this.rbCross3.TabIndex = 2;
+            this.rbCross3.TabStop = true;
+            this.rbCross3.Text = "PMX";
+            this.rbCross3.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -275,15 +259,12 @@
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.Name = "Form1";
             this.Text = "Evolutionary-genetic algorithm -- the traveling salesman problem\n.";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -296,10 +277,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton rbGen2;
-        private System.Windows.Forms.RadioButton rbGen1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rbCross2;
         private System.Windows.Forms.RadioButton rbCross1;
@@ -313,6 +290,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbFileName;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.RadioButton rbCross3;
+        private System.Windows.Forms.RadioButton rbMut3;
     }
 }
 
