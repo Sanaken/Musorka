@@ -1,6 +1,6 @@
 ﻿namespace GeneticKV
 {
-    partial class Form1
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbCross2 = new System.Windows.Forms.RadioButton();
             this.rbCross1 = new System.Windows.Forms.RadioButton();

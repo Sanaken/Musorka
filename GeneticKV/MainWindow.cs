@@ -8,12 +8,12 @@ using GenAlgorithm.Mutation;
 
 namespace GeneticKV
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
         AMatrixWrapper mMWrapper;
         Algorithm mAlgorithm;
 
-        public Form1()
+        public MainWindow()
         {
             InitializeComponent();
         }
@@ -44,8 +44,7 @@ namespace GeneticKV
                         IStrategySelection selOperator;
 
                         // I need to think right here
-                        if (rbGen1.Checked)
-                            genOperator = new RouletteGeneration();
+                        genOperator = new RouletteGeneration();
                         if (rbCross1.Checked)
                             crossOperator = new OXCrossOver();
                         if (rbMut1.Checked)

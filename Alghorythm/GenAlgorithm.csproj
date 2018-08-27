@@ -58,10 +58,10 @@
     <Compile Include="Mutation\IMutator.cs" />
     <Compile Include="Mutation\PointMutator.cs" />
     <Compile Include="NearestCity.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Selection\BTornamentSelection.cs" />
     <Compile Include="Selection\IStrategySelection.cs" />
     <Compile Include="MatrixWrapper\SalesmanMatrixWrapper.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mutation\SaltationMutator.cs" />
     <Compile Include="Selection\RangeSelection.cs" />
