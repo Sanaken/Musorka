@@ -99,7 +99,7 @@ namespace GenAlgorithm
          * -3: Invalid symbols (allowable separators: space, tab, \r, \n)
          *  0: Matrix has been created correctly
          **/
-        public int ReadCoordinates(string fileName)
+        protected override int ReadCoordinates(string fileName)
         {
             mMatrixSize = 0;
             FileStream file = null;

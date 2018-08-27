@@ -32,7 +32,7 @@ namespace GeneticKV
                     MessageBox.Show("File must contain just numbers!", "Oops");
                     break;
                 case 0:
-                    MessageBox.Show("Matrix has readed (size of " + mMWrapper.GetSize() + 
+                    MessageBox.Show("Matrix has readed (size of " + mMWrapper.Matrix.GetLength(1) + 
                         "). \nChecking matrix for correct: Diagonal elements must be equals by 0, and not diagonal - more, than 0.", "Success");
                     if (mMWrapper.MatrixIsCorrect())
                     {

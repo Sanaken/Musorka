@@ -22,8 +22,8 @@ namespace GenAlgorithm.Generation
         {
             Person[] retPop = new Person[capacity];
 
-            int dimension = wrapper.GetSize();
-            double[,] matrix = wrapper.GetMatrix();
+            int dimension = wrapper.Matrix.GetLength(1);
+            double[,] matrix = wrapper.Matrix;
 
             for (int iter = 0; iter < capacity; iter++)
             {

@@ -228,8 +228,8 @@ namespace GenAlgorithm
                 return "An error while work with best tour file has occured";
             }
 
-            int[] codeBPers = new int[mMWrapper.GetSize()];
-            for(int i=0;i< mMWrapper.GetSize(); i++)
+            int[] codeBPers = new int[mMWrapper.Matrix.GetLength(1)];
+            for(int i=0;i< mMWrapper.Matrix.GetLength(1); i++)
             {
                 if(!int.TryParse(streamReader.ReadLine(), out codeBPers[i]))
                 {

@@ -22,28 +22,28 @@ namespace GenAlgorithm
 
         public Person Run()
         {
-            int[] solution = new int[mMWrapper.GetSize()];
+            int[] solution = new int[mMWrapper.Matrix.GetLength(1)];
 
             List<int> leftCities = new List<int>();
-            solution[0] = new Random().Next(mMWrapper.GetSize());
+            solution[0] = new Random().Next(mMWrapper.Matrix.GetLength(1));
 
-            for (int i = 0; i < mMWrapper.GetSize(); i++)
+            for (int i = 0; i < mMWrapper.Matrix.GetLength(1); i++)
             {
                 leftCities.Add(i);
             }
             leftCities.Remove(solution[0]);
 
-            for (int i = 1; i < mMWrapper.GetSize(); i++)
+            for (int i = 1; i < mMWrapper.Matrix.GetLength(1); i++)
             {
                 double buffer = double.MaxValue;
                 int currentNeighbour = 0;
 
                 foreach(int city in leftCities)
                 {
-                    if (mMWrapper.GetMatrix()[city,solution[i-1]] < buffer)
+                    if (mMWrapper.Matrix[city,solution[i-1]] < buffer)
                     {
                         currentNeighbour = city;
-                        buffer = mMWrapper.GetMatrix()[city, solution[i - 1]];
+                        buffer = mMWrapper.Matrix[city, solution[i - 1]];
                     }
                 }
 
