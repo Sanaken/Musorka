@@ -84,10 +84,6 @@
       <Project>{3235c69b-1c51-4b06-bc8e-f2fe956c1ca4}</Project>
       <Name>GenAlgorithm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Population\Population.csproj">
-      <Project>{50ebceeb-e449-4a42-b8b2-66e77345b46e}</Project>
-      <Name>Population</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

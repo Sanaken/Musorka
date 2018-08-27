@@ -58,6 +58,7 @@
     <Compile Include="Mutation\IMutator.cs" />
     <Compile Include="Mutation\PointMutator.cs" />
     <Compile Include="NearestCity.cs" />
+    <Compile Include="Person\Person.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Selection\BTornamentSelection.cs" />
     <Compile Include="Selection\IStrategySelection.cs" />
@@ -69,12 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Population\Population.csproj">
-      <Project>{50ebceeb-e449-4a42-b8b2-66e77345b46e}</Project>
-      <Name>Population</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

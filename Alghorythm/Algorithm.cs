@@ -130,7 +130,7 @@ namespace GenAlgorithm
                         CrossAddPoints(mMainPopulation[i], mMainPopulation[indexOfPair]);
 
                     // Childs can mutate with a given probablity
-                    if(mRandomizer)
+                    if (mRandomizer.Next(100) < mMutationChance) 
                     MutateAndAddPoints(mBufferPopulation[mPopulationCapacity + i]);
                 }
 

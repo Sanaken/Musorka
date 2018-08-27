@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 14 for Web
+# Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserControl", "GeneticKV\UserControl.csproj", "{346FE603-09A5-4DBB-980B-C5069E083CD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenAlgorithm", "Alghorythm\GenAlgorithm.csproj", "{3235C69B-1C51-4B06-BC8E-F2FE956C1CA4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Population", "Population\Population.csproj", "{50EBCEEB-E449-4A42-B8B2-66E77345B46E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{3235C69B-1C51-4B06-BC8E-F2FE956C1CA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3235C69B-1C51-4B06-BC8E-F2FE956C1CA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3235C69B-1C51-4B06-BC8E-F2FE956C1CA4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50EBCEEB-E449-4A42-B8B2-66E77345B46E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50EBCEEB-E449-4A42-B8B2-66E77345B46E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50EBCEEB-E449-4A42-B8B2-66E77345B46E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50EBCEEB-E449-4A42-B8B2-66E77345B46E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
