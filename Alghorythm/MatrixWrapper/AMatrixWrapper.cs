@@ -31,7 +31,7 @@ namespace GenAlgorithm
             catch (WrongMatrixException e)
             {
                 try { ReadCoordinates(lines); }
-                catch(WrongMatrixException e2)
+                catch (WrongMatrixException e2)
                 {
                     throw new AggregateException(e, e2);
                 }

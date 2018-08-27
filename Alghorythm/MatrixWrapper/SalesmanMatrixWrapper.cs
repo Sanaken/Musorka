@@ -14,13 +14,8 @@ namespace GenAlgorithm
         private bool _symmetric = true;
         public SalesmanMatrixWrapper(string filename) : base(filename)
         {
-            if (mState != 0)
-            {
-                mState = ReadCoordinates(filename);
-            }
-
-            for (int i = 0; i < mMatrixSize; i++)
-                for (int j = 0; j < mMatrixSize; j++)
+            for (int i = 0; i < mMatrix.GetLength(1); i++)
+                for (int j = 0; j < mMatrix.GetLength(1); j++)
                     if ((i != j) && (mMatrix[i, j] != mMatrix[j, i]))
                     {
                         _symmetric = false;
@@ -30,8 +25,8 @@ namespace GenAlgorithm
 
         public override bool MatrixIsCorrect()
         {
-            for(int i = 0; i < mMatrixSize; i++)
-                for(int j = 0; j < mMatrixSize; j++)
+            for(int i = 0; i < mMatrix.GetLength(1); i++)
+                for(int j = 0; j < mMatrix.GetLength(1); j++)
                 {
                     if (((i == j) && (mMatrix[i, j] != 0)) || ((i != j) && (mMatrix[i, j] == 0)))
                         return false;        
