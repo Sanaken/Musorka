@@ -15,6 +15,7 @@ namespace GenAlgorithm
 
         public AMatrixWrapper(string filename)
         {
+            // Try to read matrix from file...
             mState = ReadMatrix(filename);
             if (mState != 0)
                 // If unable to read as matrix, try to read as coordinates...

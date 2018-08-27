@@ -12,7 +12,7 @@ namespace GenAlgorithm
     public class SalesmanMatrixWrapper : AMatrixWrapper
     {
         // 2-x Dimension for coordinate...
-        private const int numberOfCoordinateDimensions = 2;
+        private const int DIM_COUNT = 2;
         private bool _symmetric = true;
         public SalesmanMatrixWrapper(string filename) : base(filename)
         {
@@ -77,6 +77,7 @@ namespace GenAlgorithm
                 if (line.Length != mMatrixSize)
                 {
                     streamReader.Close();
+                    Console.WriteLine("Matrix is not square!");
                     return -2;
                 }
                 for(int j = 0; j < mMatrixSize; j++)
@@ -85,11 +86,13 @@ namespace GenAlgorithm
                     line[j] = line[j].Replace('.', ',');
                     if (!double.TryParse(line[j], out mMatrix[i, j])) {
                         streamReader.Close();
+                        Console.WriteLine("Matrix file contains wrong symbols!");
                         return -3;
                     }
                 }
             }
             streamReader.Close();
+            Console.WriteLine("Matrix file reading is success");
             return 0;
         }
         /**
@@ -129,7 +132,7 @@ namespace GenAlgorithm
             while (readedText.Last() != null);
             mMatrixSize--;
 
-            double[,] CoordBuffer = new double[numberOfCoordinateDimensions, mMatrixSize];
+            double[,] CoordBuffer = new double[DIM_COUNT, mMatrixSize];
             for(int i = 0; i < mMatrixSize; i++)
             {
                 // Split by separators
@@ -137,19 +140,21 @@ namespace GenAlgorithm
                 // Remove all empty strings received due to duplicate separators
                 line = Array.FindAll(line, x => x != "");
 
-                if(line.Length!= numberOfCoordinateDimensions)
+                if (line.Length != DIM_COUNT)
                 {
                     streamReader.Close();
+                    Console.WriteLine("Incorrect count of dimetsions");
                     return 2;
                 }
 
-                for (int j = 0; j < numberOfCoordinateDimensions; j++)
+                for (int j = 0; j < DIM_COUNT; j++)
                 {
                     // LMAO
                     line[j] = line[j].Replace('.', ',');
                     if (!double.TryParse(line[j], out CoordBuffer[j, i]))
                     {
                         streamReader.Close();
+                        Console.WriteLine("Coordinate file contains wrong symbols");
                         return -3;
                     }
                 }
@@ -173,6 +178,7 @@ namespace GenAlgorithm
             }
 
             streamReader.Close();
+            Console.WriteLine("Coordinate file reading is success");
             return 0;
         }
         public override bool MatrixIsCorrect()
