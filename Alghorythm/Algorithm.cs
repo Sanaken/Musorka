@@ -5,11 +5,15 @@ using GenAlgorithm.Mutation;
 using Population;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace GenAlgorithm
 {
     public class Algorithm
     {
+        enum AlgorithmState { OK, WrongMatrix}
+        AlgorithmState mState = AlgorithmState.OK;
+
         //       ~filename_output.txt  ~filename
         static string mOutputFileName, mFileName;
         StreamWriter sw;
@@ -23,8 +27,6 @@ namespace GenAlgorithm
         // Period of using Roulette selection between using
         // BTournament selection (in iterations)
         const double CRITICAL_DIVERSITY = 0.1;
-        const int ROULETTE_SEL_MAX_PERIOD = 5;
-        int mRouletteSelectionPeriod = ROULETTE_SEL_MAX_PERIOD;
 
         IStrategyCrossover[] mCrossOperators = { new OXCrossOver(), new CXCrossover(), new PMXCrossover() };
         IMutator[] mMutOperators = { new SaltationMutator(), new InversionMutator(), new PointMutator() };
@@ -33,7 +35,8 @@ namespace GenAlgorithm
         int[] mCurrentOperators = new int[3];
         AMatrixWrapper mMWrapper;
         Random mRandomizer;
-
+        object mLocker;
+        AutoResetEvent mCrossMutGate;
         // The EGA settings:
         int mPopulationCapacity;
         int mIterationNumber;
@@ -57,15 +60,32 @@ namespace GenAlgorithm
         {
             // Initializing of File logging
             mOutputFileName = filename + "_output.txt";
+            if (!Directory.Exists("output"))
+                Directory.CreateDirectory("output");
             sw = new StreamWriter(new FileStream("output/" + mOutputFileName, FileMode.Create, FileAccess.Write));
-
+            
             mFileName = filename;
-            mMWrapper = new SalesmanMatrixWrapper(filename + ".txt");
-            if (mMWrapper.mState != 0)
+            try
             {
-                Console.WriteLine("No matrix (code " + mMWrapper.mState + ")");
+                mMWrapper = new SalesmanMatrixWrapper(filename + ".txt");
+            }
+            catch (WrongMatrixException e)
+            {
+                Console.WriteLine(e.Message);
+                mState = AlgorithmState.WrongMatrix;
                 return;
             }
+            catch (AggregateException ae)
+            {
+                foreach (var e in ae.Flatten().InnerExceptions)
+                    Console.WriteLine(e.Message);
+
+                mState = AlgorithmState.WrongMatrix;
+                return;
+            }
+
+            mLocker = new object();
+            mCrossMutGate = new AutoResetEvent(false);
             mRandomizer = new Random();
             mIterationNumber = iterationNumber;
             mPopulationCapacity = populationCapacity;
@@ -91,53 +111,66 @@ namespace GenAlgorithm
 
         public void Run()
         {
-            if (mMWrapper.mState != 0)
+            if (mState != AlgorithmState.OK)
             {
-                Console.WriteLine("Matrix is invalid, run is impossible!");
+                Console.WriteLine("Can not run algorithm, reason: " + mState.ToString());
                 return;
             }
+
             // Print initial statistics for generated population:
             PrintStatistics(0);
-        
+
             // Main cycle of EGA
             for (int iteration = 0; iteration < mIterationNumber; iteration++)
             {
                 ChangeOperators();
-            // Crossing-over cycle...
-            for (int i = 0; i < mPopulationCapacity; i++)
+
+                int runningProcess = mPopulationCapacity;
+                // Paralleled crossing-over cycle
+                for (int j = 0; j < mPopulationCapacity; j++)
                 {
-                    // Parents take part on selection
-                    mBufferPopulation[i] = mMainPopulation[i];
-
-                    // According to the outbreeding scheme, each pair is selected by a pair
-                    int indexOfPair = 0;
-                    int distMax = 0;
-
-                    for (int j = 1; j < mPopulationCapacity; j++)
+                    ThreadPool.QueueUserWorkItem(state =>
                     {
-                        int distBuf = mMWrapper.Distance(mMainPopulation[i], 
-                            mMainPopulation[(i + j) % mPopulationCapacity]);
+                        var i = (int)state;
+                        // Parents take part on selection
+                        mBufferPopulation[i] = mMainPopulation[i];
 
-                        if (distBuf > distMax)
+                        // According to the outbreeding scheme, each pair is selected by a pair
+                        int indexOfPair = 0;
+                        int distMax = 0;
+
+                        for (int k = 1; k < mPopulationCapacity; k++)
                         {
-                            indexOfPair = (i + j) % mPopulationCapacity;
-                            distMax = distBuf;
+                            int distBuf = mMWrapper.Distance(mMainPopulation[i],
+                                mMainPopulation[(i + k) % mPopulationCapacity]);
+
+                            if (distBuf > distMax)
+                            {
+                                indexOfPair = (i + k) % mPopulationCapacity;
+                                distMax = distBuf;
+                            }
                         }
-                    }
 
-                    // Childs as a results of crossing-over take pars on selection too
-                    mBufferPopulation[mPopulationCapacity + i] = 
-                        CrossAddPoints(mMainPopulation[i], mMainPopulation[indexOfPair]);
+                        // Childs as a results of crossing-over take pars on selection too
+                        mBufferPopulation[mPopulationCapacity + i] =
+                            CrossAddPoints(mMainPopulation[i], mMainPopulation[indexOfPair]);
 
-                    // Childs can mutate with a given probablity
-                    if (mRandomizer.Next(100) < mMutationChance) 
-                    MutateAndAddPoints(mBufferPopulation[mPopulationCapacity + i]);
+                        // Childs can mutate with a given probablity
+                        bool toMutate;
+                        lock (mLocker) { toMutate = mRandomizer.Next(100) < mMutationChance; }                       
+                        if (toMutate)
+                            MutateAndAddPoints(mBufferPopulation[mPopulationCapacity + i]);
+                        if (Interlocked.Decrement(ref runningProcess) == 0)
+                            mCrossMutGate.Set();
+                    }, j);
                 }
+
+                mCrossMutGate.WaitOne();        
 
                 mMainPopulation = mSelOperator.Selection(mBufferPopulation, mMWrapper);
 
                 // If selection is B-Tournament, The champion is guaranteed to move into the next generation
-                if(mSelOperator is RouletteSelection)
+                if (mSelOperator is RouletteSelection)
                     SaveChampion();
 
                 SetBestPerson();
@@ -155,9 +188,10 @@ namespace GenAlgorithm
                 }       
             }
 
-            Console.WriteLine("Алгоритм завершен");
+            Console.WriteLine($"Алгоритм завершен");
             PrintOPRouletteState();
             Console.WriteLine(LoadBestTour());
+            sw.Close();
         }
 
         private void PrintOPRouletteState()
@@ -447,7 +481,6 @@ namespace GenAlgorithm
             sw.WriteLine(mBestPerson);
             sw.WriteLine("Used operators: " + mCrossOperator + ", " +
                 mMutOperator + ", " + mSelOperator);
-            sw.Close();
         }
 
         private bool WhetherMutate()

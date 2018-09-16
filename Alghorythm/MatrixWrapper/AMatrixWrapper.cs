@@ -33,7 +33,7 @@ namespace GenAlgorithm
                 try { ReadCoordinates(lines); }
                 catch (WrongMatrixException e2)
                 {
-                    throw new AggregateException(e, e2);
+                    throw new AggregateException("No ways about read matrix", e, e2);
                 }
             }
 
@@ -61,6 +61,7 @@ namespace GenAlgorithm
                 readedText.Add(streamReader.ReadLine());
             }
             while (readedText.Last() != null);
+            readedText.Remove(readedText.Last());
 
             streamReader.Close();
             return readedText;

@@ -9,19 +9,29 @@ namespace GenAlgorithm
 {
     public class NearestNeighbour
     {
+        bool ok = true;
         AMatrixWrapper mMWrapper;
         public NearestNeighbour(string filename)
         {
-            mMWrapper = new SalesmanMatrixWrapper(filename + ".txt");
-            if (mMWrapper.mState != 0)
+            try
             {
-                Console.WriteLine("No matrix (code " + mMWrapper.mState + ")");
-                return;
+                mMWrapper = new SalesmanMatrixWrapper(filename + ".txt");
+            }
+            catch (WrongMatrixException e)
+            {
+                Console.WriteLine(e);
+                ok = false;
             }
         }
 
         public Person Run()
         {
+            if (!ok)
+            {
+                Console.WriteLine("Not OK!");
+                return null;
+            }
+
             int[] solution = new int[mMWrapper.Matrix.GetLength(1)];
 
             List<int> leftCities = new List<int>();
