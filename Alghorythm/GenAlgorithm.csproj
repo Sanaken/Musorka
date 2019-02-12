@@ -64,6 +64,7 @@
     <Compile Include="Mutation\SaltationMutator.cs" />
     <Compile Include="Selection\RangeSelection.cs" />
     <Compile Include="Selection\RouletteSelection.cs" />
+    <Compile Include="X_Algorithm.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

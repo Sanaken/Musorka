@@ -20,7 +20,7 @@ namespace GeneticKV
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            mMWrapper = new SalesmanMatrixWrapper(tbFileName.Text);
+           /* mMWrapper = new SalesmanMatrixWrapper(tbFileName.Text);
             switch (mMWrapper.mState) {
                 case -1:
                     MessageBox.Show("File is not found!", "Oops");
@@ -58,10 +58,10 @@ namespace GeneticKV
                     }
                     else
                     {
-                        MessageBox.Show("Unfortunately, matrix is uncorrect. Fixed it!", "Oops");
+                        MessageBox.Show("Unfortunately, matrix is incorrect. Fixed it!", "Oops");
                     }
                     break;
-            }
+            }*/
         }
 
         private void tbFileName_Click(object sender, EventArgs e)
